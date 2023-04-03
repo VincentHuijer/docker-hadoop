@@ -1,4 +1,4 @@
-DOCKER_NETWORK = docker-hadoop-master_default
+DOCKER_NETWORK = docker-hadoop_default
 ENV_FILE = hadoop.env
 current_branch = master
 build:
