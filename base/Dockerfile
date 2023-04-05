@@ -1,4 +1,6 @@
 FROM debian:9
+#For Mac M1, uncomment the next line
+#FROM arm64v8/debian:9
 
 MAINTAINER Ivan Ermilov <ivan.s.ermilov@gmail.com>
 MAINTAINER Giannis Mouchakis <gmouchakis@iit.demokritos.gr>
