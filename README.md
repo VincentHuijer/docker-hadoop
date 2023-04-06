@@ -9,6 +9,11 @@ Version 2.0.0 introduces uses wait_for_it script for the cluster startup
 ## Supported Hadoop Versions
 See repository branches for supported hadoop versions
 
+## Update 
+The current version of this repo will fix issues such as:
+* not being able to write files to HDFS using a client library, due to not having enough replications. 
+* allows you to check the status of a specific node via the GUI
+
 ## Quick Start
 
 To deploy an example HDFS cluster, run:
