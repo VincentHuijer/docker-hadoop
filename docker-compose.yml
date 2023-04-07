@@ -4,6 +4,7 @@ services:
   namenode:
     image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
     container_name: namenode
+    hostname: namenode
     restart: always
     ports:
       - 9870:9870
@@ -15,39 +16,72 @@ services:
       - CLUSTER_NAME=test
     env_file:
       - ./hadoop.env
+    networks:
+      hadoop_network:
+        aliases:
+          - namenode
 
-  datanode:
+  datanode1:
     image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
     container_name: datanode
+    hostname: localhost
     restart: always
+    ports:
+      - 9864:9864
+      - 9866:9866
     volumes:
       - hadoop_datanode:/hadoop/dfs/data
     environment:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./hadoop.env
-  
+    networks:
+      hadoop_network:
+
+  datanode2:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode2
+    hostname: localhost
+    restart: always
+    ports:
+      - 9865:9864
+      - 9867:9866
+    volumes:
+      - hadoop_datanode2:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    env_file:
+      - ./hadoop.env
+    networks:
+      hadoop_network:
+
   resourcemanager:
     image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
     container_name: resourcemanager
+    hostname: resourcemanager
     restart: always
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864"
     env_file:
       - ./hadoop.env
+    networks:
+      hadoop_network:
 
   nodemanager:
     image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
     container_name: nodemanager
+    hostname: nodemanager
     restart: always
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
     env_file:
       - ./hadoop.env
-
+    networks:
+      hadoop_network:
   historyserver:
     image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
     container_name: historyserver
+    hostname: historyserver
     restart: always
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
@@ -55,7 +89,8 @@ services:
       - hadoop_historyserver:/hadoop/yarn/timeline
     env_file:
       - ./hadoop.env
-
+    networks:
+      hadoop_network:
   jupyter:
     image: jupyter/all-spark-notebook
     container_name: jupyter
@@ -68,8 +103,13 @@ services:
     environment:
       - JUPYTER_ENABLE_LAB=yes
       - NotebookApp.token=
-
+    networks:
+      hadoop_network:
 volumes:
   hadoop_namenode:
   hadoop_datanode:
+  hadoop_datanode2:
   hadoop_historyserver:
+
+networks:
+  hadoop_network:
