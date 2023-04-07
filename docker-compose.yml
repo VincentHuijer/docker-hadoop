@@ -78,7 +78,6 @@ services:
       - ./hadoop.env
     networks:
       hadoop_network:
-
   historyserver:
     image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
     container_name: historyserver
@@ -92,7 +91,20 @@ services:
       - ./hadoop.env
     networks:
       hadoop_network:
-
+  jupyter:
+    image: jupyter/all-spark-notebook
+    container_name: jupyter
+    restart: always
+    ports:
+      - 8888:8888
+    volumes:
+      - ./notebooks:/home/jovyan/work
+      - ./input:/input
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - NotebookApp.token=
+    networks:
+      hadoop_network:
 volumes:
   hadoop_namenode:
   hadoop_datanode:
